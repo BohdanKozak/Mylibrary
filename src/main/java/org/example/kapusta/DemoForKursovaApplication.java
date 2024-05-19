@@ -26,7 +26,6 @@ class LibraryController {
         String authorName = book.getAuthorName().toLowerCase(); // Using lowercased author name as key
         Book existingBook = bookRepository.findById(authorName).orElse(null);
         if (existingBook != null) {
-            // If book already exists, increase quantity
             existingBook.setQuantity(existingBook.getQuantity() + book.getQuantity());
             bookRepository.save(existingBook);
         } else {

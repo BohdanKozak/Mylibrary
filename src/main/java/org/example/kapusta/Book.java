@@ -20,6 +20,9 @@ public class Book {
     @JsonProperty("quantity")
     public int quantity;
 
+    @JsonProperty("imageUrl")
+    public String imageUrl;
+
     public Book(){
 
     }
@@ -33,6 +36,10 @@ public class Book {
     // Getters and setters
     public String getAuthorName() {
         return authorName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setAuthorName(String authorName) {
@@ -66,6 +73,9 @@ public class Book {
         this.quantity = quantity;
     }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     @Override
     public String toString() {
