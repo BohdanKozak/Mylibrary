@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список книг</title>
     <style>
+        /* Ваші стилі залишаються без змін */
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f0f0f0;
             margin: 0;
             padding: 0;
-            padding-bottom: 70px; /* Встановлення відступу для нижнього поля, яке передує footer */
+            padding-bottom: 70px;
         }
 
         header {
@@ -18,40 +21,42 @@
             color: white;
             text-align: center;
             padding: 20px 0;
-            position: fixed; /* Зафіксований хедер */
-            width: 100%; /* Ширина 100% відносно вікна перегляду */
-            top: 0; /* Прикріпити зверху */
-            z-index: 1000; /* Встановити високий індекс стеку, щоб хедер був поверх інших елементів */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
         h1 {
-            font-size: 24px; /* Зменшуємо розмір заголовку */
-            color: black; /* Змінюємо колір тексту на чорний */
-            margin-bottom: 10px; /* Зменшуємо відступ вниз */
+            font-size: 24px;
+            color: black;
+            margin-bottom: 10px;
         }
-        .bookіs{
-            margin: 20px auto; /* Відступи по вертикалі 20px, по горизонталі автоматично центрується */
-            max-width: 80%; /* Максимальна ширина контейнера 80% */
-            text-align: center; /* Вирівнюємо текст по центру */
+
+        .bookіs {
+            margin: 20px auto;
+            max-width: 80%;
+            text-align: center;
         }
+
         .sort-buttons {
             text-align: center;
-            margin-bottom: 10px; /* Зменшуємо відступ вниз */
+            margin-bottom: 10px;
         }
 
         .sort-buttons button {
-            padding: 8px 16px; /* Зменшуємо висоту і ширину кнопок */
-            background-color: white; /* Змінюємо фон кнопок на білий */
-            color: black; /* Змінюємо колір тексту на чорний */
-            border: 1px solid black; /* Додаємо рамку */
+            padding: 8px 16px;
+            background-color: white;
+            color: black;
+            border: 1px solid black;
             border-radius: 4px;
             cursor: pointer;
-            margin: 0 5px; /* Зменшуємо відступ між кнопками */
+            margin: 0 5px;
             transition: background-color 0.3s ease;
         }
 
         .sort-buttons button:hover {
-            background-color: #f0f0f0; /* Змінюємо колір при наведенні */
+            background-color: #f0f0f0;
         }
 
         .header-content {
@@ -107,8 +112,8 @@
             margin: 0 auto;
             margin-top: 30px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Одинакова ширина для трьох колонок */
-            gap: 20px; /* Відстань між колонками */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
         .book-card {
@@ -122,17 +127,18 @@
 
         .book-card img {
             width: 100%;
-            max-height: 100%; /* Зміна максимальної висоти */
+            max-height: 100%;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 10px;
-            height: auto; /* Пропорційне масштабування */
+            height: auto;
         }
 
         .book-card h2 {
             font-size: 18px;
             margin-bottom: 5px;
         }
+
         .book-card p {
             font-size: 14px;
             margin-bottom: 10px;
@@ -169,6 +175,7 @@
         }
     </style>
 </head>
+
 <body>
 <header>
     <div class="header-content">
@@ -187,27 +194,40 @@
         <button onclick="sortByYear()">Сортувати за роком</button>
     </div>
 </div>
-<div class="book-list-container">
-    <!-- Тут будуть книги -->
-    <div th:each="book : ${books}" class="book-card">
-        <img th:src="${book.imageUrl}" alt="Book Cover" style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-        <h2 th:text="${book.title}">Назва книги</h2>
-        <p th:text="${book.authorName}">Прізвище та ініціали автора</p>
-        <p>Рік видання: <span th:text="${book.year}">2022</span></p>
-        <p>Кількість екземплярів: <span th:text="${book.quantity}">5</span></p>
-        <div class="buttons">
-            <button class="delete-button" id="delete" name="delete" th:attr="onclick='deleteBook(\'' + ${book.id} + '\')'">Delete</button>
-            <button class="add-button" id="add" name="add" th:attr="onclick='addBook(\'' + ${book.id} + '\')'">Add</button>
-        </div>
-    </div>
+<div class="book-list-container" id="book-list-container">
+    <!-- Книги будуть завантажені тут за допомогою JavaScript -->
 </div>
 <footer>
     &copy; 2024 MyLibrary
 </footer>
-</body>
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('http://localhost:8080//books/all')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('book-list-container');
+                data.forEach(book => {
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.innerHTML = `
+                        <img src="${book.imageUrl}" alt="Book Cover">
+                        <h2>${book.title}</h2>
+                        <p>${book.authorName}</p>
+                        <p>Рік видання: <span>${book.year}</span></p>
+                        <p>Кількість екземплярів: <span>${book.quantity}</span></p>
+                        <div class="buttons">
+                            <button class="delete-button" onclick="deleteBook('${book.id}')">Delete</button>
+                            <button class="add-button" onclick="addBook('${book.id}')">Add</button>
+                        </div>
+                    `;
+                    container.appendChild(bookCard);
+                });
+            })
+            .catch(error => console.error('Error fetching books:', error));
+    });
+
     function deleteBook(id) {
-        const url = id;    fetch(url, {
+        fetch(`/books/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -217,19 +237,14 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                console.log(url);
                 console.log('Book successfully deleted');
                 window.location.reload();
             })
-            .catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-            });
+            .catch(error => console.error('There was a problem with your fetch operation:', error));
     }
 
     function addBook(id) {
-        const url = "/books/" + id;
-
-        fetch(url, {
+        fetch(`/books/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -242,10 +257,9 @@
                 console.log('Book successfully added');
                 window.location.reload();
             })
-            .catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-            });
+            .catch(error => console.error('There was a problem with your fetch operation:', error));
     }
+
     function sortByYear() {
         const booksContainer = document.querySelector('.book-list-container');
         const books = Array.from(booksContainer.querySelectorAll('.book-card'));
@@ -264,14 +278,14 @@
         const books = Array.from(booksContainer.querySelectorAll('.book-card'));
 
         books.sort((a, b) => {
-            const authorA = a.querySelector('p:nth-child(3)').textContent.trim(); // Виправлення селектора тут
-            const authorB = b.querySelector('p:nth-child(3)').textContent.trim(); // Виправлення селектора тут
-
+            const authorA = a.querySelector('p:nth-child(2)').textContent.trim();
+            const authorB = b.querySelector('p:nth-child(2)').textContent.trim();
             return authorA.localeCompare(authorB);
         });
 
         books.forEach(book => booksContainer.appendChild(book));
     }
-
 </script>
+</body>
+
 </html>

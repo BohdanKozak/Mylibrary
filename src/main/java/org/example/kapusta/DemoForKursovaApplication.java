@@ -21,7 +21,7 @@ class LibraryController {
         this.bookRepository = bookRepository;
     }
 
-    @PostMapping("/books/add")
+    @PostMapping("/books/addу")
     public String addBook(@ModelAttribute Book book) {
         String authorName = book.getAuthorName().toLowerCase(); // Using lowercased author name as key
         Book existingBook = bookRepository.findById(authorName).orElse(null);
@@ -29,7 +29,6 @@ class LibraryController {
             existingBook.setQuantity(existingBook.getQuantity() + book.getQuantity());
             bookRepository.save(existingBook);
         } else {
-            // If book doesn't exist, add new entry
             bookRepository.save(book);
         }
         return "redirect:/books/all";
@@ -43,7 +42,7 @@ class LibraryController {
         return "addBookForm";
     }
 
-    @GetMapping("/books/all")
+    @GetMapping("/books/all1")
     public String getAllBooks(Model model) {
         List<Book> books = bookRepository.findAll();
         model.addAttribute("books", books);
